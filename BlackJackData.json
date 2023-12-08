@@ -1,0 +1,19 @@
+[
+    {
+        "id": 1,
+        "username": null,
+        "wallet": 10000,
+        "winnings": 0
+    },
+    {
+        "id": 2,
+        "username": "Johdis",
+        "wallet": 16300.0
+    },
+    {
+        "id": 3,
+        "username": null,
+        "wallet": 10000,
+        "winnings": 0
+    }
+]
