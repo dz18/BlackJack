@@ -30,7 +30,10 @@ def resetData(database, userID):
     ''''''
     for i,k in enumerate(database):
         if userID == k["id"]:
-            database[i] = {'id' : userID, "username" : None, 'wallet' : 10000, 'winnings' : 0}
+            k['username'] = None
+            k['wallet'] = 10000
+            for keys, items in k['achievements'].items():
+                items['earned'] = False
 
     with open("BlackJackData.json", "w") as f:
         json.dump(database, f, indent=4)

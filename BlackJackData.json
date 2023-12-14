@@ -3,17 +3,88 @@
         "id": 1,
         "username": null,
         "wallet": 10000,
+        "achievements": {
+            "BlackJack Master": {
+                "description": "Achieve a natural blackjack (an Ace and a 10-value card) three times in a row",
+                "earned": false
+            },
+            "Lucky Streak": {
+                "description": "Win five hands in a row without busting or going over 21",
+                "earned": false
+            },
+            "Split Personalilty": {
+                "description": "Successfully split a pair of cards and win both hands",
+                "earned": false
+            },
+            "Five-Card Charlie": {
+                "id": 4,
+                "description": "Win a hand with a five-card total without busting",
+                "earned": false
+            },
+            "Marathon": {
+                "id": 5,
+                "description": "Win a hand with a five-card total without busting",
+                "earned": false
+            }
+        },
         "winnings": 0
     },
     {
         "id": 2,
         "username": "Johdis",
-        "wallet": 16300.0
+        "wallet": 15260.0,
+        "achievements": {
+            "BlackJack Master": {
+                "description": "Achieve a natural blackjack (an Ace and a 10-value card) three times in a row",
+                "earned": false
+            },
+            "Lucky Streak": {
+                "description": "Win five hands in a row without busting or going over 21",
+                "earned": false
+            },
+            "Split Personalilty": {
+                "description": "Successfully split a pair of cards and win both hands",
+                "earned": false
+            },
+            "Five-Card Charlie": {
+                "id": 4,
+                "description": "Win a hand with a five-card total without busting",
+                "earned": false
+            },
+            "Marathon": {
+                "id": 5,
+                "description": "Win a hand with a five-card total without busting",
+                "earned": false
+            }
+        }
     },
     {
         "id": 3,
         "username": null,
         "wallet": 10000,
-        "winnings": 0
+        "achievements": {
+            "BlackJack Master": {
+                "description": "Achieve a natural blackjack (an Ace and a 10-value card) three times in a row",
+                "earned": false
+            },
+            "Lucky Streak": {
+                "description": "Win five hands in a row without busting or going over 21",
+                "earned": false
+            },
+            "Split Personalilty": {
+                "description": "Successfully split a pair of cards and win both hands",
+                "earned": false
+            },
+            "Five-Card Charlie": {
+                "id": 4,
+                "description": "Win a hand with a five-card total without busting",
+                "earned": false
+            },
+            "Marathon": {
+                "id": 5,
+                "description": "Win a hand with a five-card total without busting",
+                "earned": false
+            }
+        }
     }
 ]

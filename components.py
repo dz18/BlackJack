@@ -12,12 +12,15 @@ class BlackJack():
     wallet = 10000
     winnings = 0
     newGame = True
+    split = list()
 
     def __init__(self, cards, bet):
         self.deck = cards
         self.bet = bet
         self.dealersHand = random.sample(self.deck, 1)
+        self.removeCardsFromDeck(self.deck, self.dealersHand)
         self.playersHand = random.sample(self.deck, 2)
+        self.removeCardsFromDeck(self.deck, self.playersHand)
         self.dealersCount = self.count(self.dealersHand)
         self.playersCount = self.count(self.playersHand)
 
@@ -99,11 +102,18 @@ class BlackJack():
                 else:
                     self.deck.append(Card(value,value,suit))
         self.dealersHand = random.sample(self.deck, 1)
+        self.removeCardsFromDeck(self.deck, self.dealersHand)
         self.playersHand = random.sample(self.deck, 2)
+        self.removeCardsFromDeck(self.deck, self.playersHand)
         self.rounds = 1
         self.newGame = True
         self.dealersCount = self.count(self.dealersHand)
         self.playersCount = self.count(self.playersHand)
+
+    def split(self):
+        ''''''
+        print(self.playersHand)
+        print(self.playersHand[0], self.playersHand[1])
 
     def printCards(self, hand):
         for card in hand:
@@ -122,7 +132,7 @@ class BlackJack():
             else:
                 print()
                 print("1 | Hit")
-                print("2 | Stay")
+                print("2 | Stand")
                 inp = int(input(" >> "))
                 print()
                 if inp == 1:
