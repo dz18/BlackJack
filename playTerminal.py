@@ -45,27 +45,27 @@ def checkAchievements(userData, splitWins, winStreak, winnings, CardCountWin, pl
         elif k == 'Lucky Streak' and winStreak == 5: 
             ''' Win five hands in a row without busting or going over 21 '''
             v['earned'] = True
-            print(f'Acievement Unlocked "{k}"!!')
+            print(f'Acievement Unlocked: {k}!!')
         elif k == 'Split Personalilty' and splitWins == True:
             ''' Successfully split a pair of cards and win both hands '''
             v['earned'] = True
-            print(f'Acievement Unlocked "{k}"!!')
+            print(f'Acievement Unlocked: {k}!!')
         elif k == 'Five-Card Charlie' and CardCountWin == True:
             ''' Win a hand with a five-card total without busting '''
             v['earned'] = True
-            print(f'Acievement Unlocked "{k}"!!')
+            print(f'Acievement Unlocked: {k}!!')
         elif k == 'Marathon' and plays == 100:
             ''' Play 100 consecutive hands without leaving the table '''
             v['earned'] = True
-            print(f'Acievement Unlocked "{k}"!!')
+            print(f'Acievement Unlocked: {k}!!')
         elif k == 'BlackJack Tycoon' and userData['wallet'] == 1000000:
             ''' Accumulate a total chip count of one million in your wallet '''
             v['earned'] = True
-            print(f'Acievement Unlocked "{k}"!!')
+            print(f'Acievement Unlocked: {k}!!')
         elif k == 'Crescendo Conquest' and winnings == 1000000:
             ''' Accumulate a total chip count of one million in one sitting '''
             v['earned'] = True
-            print(f'Acievement Unlocked "{k}"!!')
+            print(f'Acievement Unlocked: {k}!!')
 
 game = True
 db = loadData()
@@ -158,7 +158,7 @@ while (game == True) and (user["wallet"] >= 5):
     user["wallet"] += result['winnings']
     winnings += result['winnings']
     winStreak = winStreak + 1 if result['win'] == True else 0
-    
+
     print(f"\nWinnings Today: ${winnings}")
     print(f"Wallet: ${user['wallet']}")
 
