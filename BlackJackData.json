@@ -4,10 +4,6 @@
         "username": null,
         "wallet": 10000,
         "achievements": {
-            "BlackJack Master": {
-                "description": "Achieve a natural blackjack (an Ace and a 10-value card) three times in a row",
-                "earned": false
-            },
             "Lucky Streak": {
                 "description": "Win five hands in a row without busting or going over 21",
                 "earned": false
@@ -23,7 +19,17 @@
             },
             "Marathon": {
                 "id": 5,
-                "description": "Win a hand with a five-card total without busting",
+                "description": "Play 100 consecutive hands without leaving the table",
+                "earned": false
+            },
+            "BlackJack Tycoon": {
+                "id": 6,
+                "description": "Accumulate a total chip count of one million in your wallet",
+                "earned": false
+            },
+            "Crescendo Conquest": {
+                "id": 7,
+                "description": "Accumulate a total chip count of one million in one sitting",
                 "earned": false
             }
         },
@@ -34,10 +40,6 @@
         "username": "Johdis",
         "wallet": 15260.0,
         "achievements": {
-            "BlackJack Master": {
-                "description": "Achieve a natural blackjack (an Ace and a 10-value card) three times in a row",
-                "earned": false
-            },
             "Lucky Streak": {
                 "description": "Win five hands in a row without busting or going over 21",
                 "earned": false
@@ -54,6 +56,16 @@
             "Marathon": {
                 "id": 5,
                 "description": "Win a hand with a five-card total without busting",
+                "earned": false
+            },
+            "BlackJack Tycoon": {
+                "id": 6,
+                "description": "Accumulate a total chip count of one million",
+                "earned": false
+            },
+            "Crescendo Conquest": {
+                "id": 7,
+                "description": "Accumulate a total chip count of one million in one sitting",
                 "earned": false
             }
         }
@@ -63,10 +75,6 @@
         "username": null,
         "wallet": 10000,
         "achievements": {
-            "BlackJack Master": {
-                "description": "Achieve a natural blackjack (an Ace and a 10-value card) three times in a row",
-                "earned": false
-            },
             "Lucky Streak": {
                 "description": "Win five hands in a row without busting or going over 21",
                 "earned": false
@@ -83,6 +91,16 @@
             "Marathon": {
                 "id": 5,
                 "description": "Win a hand with a five-card total without busting",
+                "earned": false
+            },
+            "BlackJack Tycoon": {
+                "id": 6,
+                "description": "Accumulate a total chip count of one million",
+                "earned": false
+            },
+            "Crescendo Conquest": {
+                "id": 7,
+                "description": "Accumulate a total chip count of one million in one sitting",
                 "earned": false
             }
         }

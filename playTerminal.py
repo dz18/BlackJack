@@ -38,6 +38,34 @@ def resetData(database, userID):
     with open("BlackJackData.json", "w") as f:
         json.dump(database, f, indent=4)
 
+def checkAchievements(userData, splitWins, winStreak, winnings, CardCountWin, plays ):
+    for k,v in userData['achievements'].items():
+        if v['earned'] == True:
+            pass
+        elif k == 'Lucky Streak' and winStreak == 5: 
+            ''' Win five hands in a row without busting or going over 21 '''
+            v['earned'] = True
+            print(f'Acievement Unlocked "{k}"!!')
+        elif k == 'Split Personalilty' and splitWins == True:
+            ''' Successfully split a pair of cards and win both hands '''
+            v['earned'] = True
+            print(f'Acievement Unlocked "{k}"!!')
+        elif k == 'Five-Card Charlie' and CardCountWin == True:
+            ''' Win a hand with a five-card total without busting '''
+            v['earned'] = True
+            print(f'Acievement Unlocked "{k}"!!')
+        elif k == 'Marathon' and plays == 100:
+            ''' Play 100 consecutive hands without leaving the table '''
+            v['earned'] = True
+            print(f'Acievement Unlocked "{k}"!!')
+        elif k == 'BlackJack Tycoon' and userData['wallet'] == 1000000:
+            ''' Accumulate a total chip count of one million in your wallet '''
+            v['earned'] = True
+            print(f'Acievement Unlocked "{k}"!!')
+        elif k == 'Crescendo Conquest' and winnings == 1000000:
+            ''' Accumulate a total chip count of one million in one sitting '''
+            v['earned'] = True
+            print(f'Acievement Unlocked "{k}"!!')
 
 game = True
 db = loadData()
@@ -100,6 +128,8 @@ if game != False:
         user["username"] = newName
     winnings = 0
     bet = 0
+    winStreak = 0
+    plays = 0
 
 # Start game if user has money
 while (game == True) and (user["wallet"] >= 5):
@@ -120,13 +150,15 @@ while (game == True) and (user["wallet"] >= 5):
         except:
             print("Invalid Input. Try Again")
 
-    # Game begins - BlackJack(Cards, Bet)
-    result = BlackJack(cards, bet)
+    # Game begins - BlackJack(Cards, Bet, wallet)
+    result = BlackJack(cards, bet, user['wallet'])
     bet = 0
     print()
-    result = result.playTerminal()
-    user["wallet"] += result
-    winnings += result
+    result = result.playTerminal() # {'winnings': int(), 'win' : bool(), 'blackjack': bool(), 'split': bool(), 'push': bool(), 'cardCount':cardCount()}
+    user["wallet"] += result['winnings']
+    winnings += result['winnings']
+    winStreak = winStreak + 1 if result['win'] == True else 0
+    
     print(f"\nWinnings Today: ${winnings}")
     print(f"Wallet: ${user['wallet']}")
 
@@ -135,6 +167,7 @@ while (game == True) and (user["wallet"] >= 5):
         break
     
     # Ask user if they want to play again
+    checkAchievements(user,False, winStreak, winnings, False, plays)
     decision = True
     while decision:
         try:

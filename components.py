@@ -12,17 +12,17 @@ class BlackJack():
     wallet = 10000
     winnings = 0
     newGame = True
-    split = list()
 
-    def __init__(self, cards, bet):
+    def __init__(self, cards, bet, wallet):
         self.deck = cards
         self.bet = bet
         self.dealersHand = random.sample(self.deck, 1)
         self.removeCardsFromDeck(self.deck, self.dealersHand)
-        self.playersHand = random.sample(self.deck, 2)
+        self.playersHand = [random.sample(self.deck, 2)]
         self.removeCardsFromDeck(self.deck, self.playersHand)
         self.dealersCount = self.count(self.dealersHand)
-        self.playersCount = self.count(self.playersHand)
+        self.playersCount = [self.count(self.playersHand[0])]
+        self.wallet = wallet
 
     def removeCardsFromDeck(self, tdeck, removeCards):
         ''''''
@@ -33,35 +33,18 @@ class BlackJack():
     def setBet(self, bet):
         self.bet = bet
 
-    def stay(self):
-        '''''' 
-        while(self.dealersCount < self.playersCount):
-            newCard = random.sample(self.deck,1)
-            self.dealersHand.append(newCard[0])
-            self.removeCardsFromDeck(self.deck, newCard)
-            self.dealersCount = self.count(self.dealersHand)
-            
-        if self.dealersCount > 21:
-            return True
-        elif self.dealersCount == self.playersCount:
-            return None
-        else:
-            return False
-
-
-    def hit(self):
+    def hit(self, hand=0):
         ''''''
         newCard = random.sample(self.deck,1)
-        self.playersHand.append(newCard[0])
+        self.playersHand[hand].append(newCard[0])
         self.removeCardsFromDeck(self.deck, newCard)
-        self.playersCount = self.count(self.playersHand)
+        self.playersCount[hand] = self.count(self.playersHand[hand])
         
-        if self.rounds == 1:
+        if len(self.dealersHand) == 1:
             newCard = random.sample(self.deck,1)
             self.dealersHand.append(newCard[0])
             self.removeCardsFromDeck(self.deck, newCard)
             self.dealersCount = self.count(self.dealersHand)
-        self.rounds += 1
 
     def validate(self, hand):
         handSum = 0
@@ -103,71 +86,170 @@ class BlackJack():
                     self.deck.append(Card(value,value,suit))
         self.dealersHand = random.sample(self.deck, 1)
         self.removeCardsFromDeck(self.deck, self.dealersHand)
-        self.playersHand = random.sample(self.deck, 2)
+        self.playersHand = [random.sample(self.deck, 2)]
         self.removeCardsFromDeck(self.deck, self.playersHand)
         self.rounds = 1
         self.newGame = True
         self.dealersCount = self.count(self.dealersHand)
-        self.playersCount = self.count(self.playersHand)
+        self.playersCount = [self.count(self.playersHand)]
 
     def split(self):
         ''''''
-        print(self.playersHand)
-        print(self.playersHand[0], self.playersHand[1])
+        self.playersHand.append([self.playersHand[0][1]])
+        del self.playersHand[0][1]
+        self.playersCount.append(self.count(self.playersHand[1]))
+        self.playersCount[0] = self.count(self.playersHand[0])
 
     def printCards(self, hand):
         for card in hand:
             print(" - " + card.name)
 
-    def playTerminal(self):
-        while(True):
-            print("Dealers Count :", self.dealersCount)
-            self.printCards(self.dealersHand)
-            print("Your Card Count :", self.playersCount)
-            self.printCards(self.playersHand)
-            if self.playersCount == 21 and self.rounds == 1:
-                amountWon = self.bet * (1.5)
-                print("BlackJack!! You win $" + "{:.2f}".format(amountWon))
-                return amountWon
-            else:
-                print()
-                print("1 | Hit")
-                print("2 | Stand")
-                inp = int(input(" >> "))
-                print()
-                if inp == 1:
-                    self.hit()
-                elif inp == 2:
-                    result = self.stay()
-                    if result == True:
-                        amountWon = float(self.bet) * 1.5
-                        print("Dealers Count :", self.dealersCount)
-                        self.printCards(self.dealersHand)
-                        print("Your Card Count :", self.playersCount)
-                        self.printCards(self.playersHand)
-                        print("Winner Winner!! You win $" + "{:.2f}".format(amountWon))
-                        return amountWon
-                    elif result == False:
-                        print("Dealers Count :", self.dealersCount)
-                        self.printCards(self.dealersHand)
-                        print("Your Card Count :", self.playersCount)
-                        self.printCards(self.playersHand)
-                        print("Loser Loser!!")
-                        return 0
-                    else:
-                        print("Dealers Count :", self.dealersCount)
-                        self.printCards(self.dealersHand)
-                        print("Your Card Count :", self.playersCount)
-                        self.printCards(self.playersHand)
-                        print("Push. We go again.")
-                        print()
-                        bet = self.bet
-                        self.reset()
-                        self.bet = bet
-                        self.newGame = False
-                if self.count(self.playersHand) > 21:
-                    print("You lose! Exceeded 21.")
-                    print("Your Card Count :", self.playersCount)
-                    self.printCards(self.playersHand)
-                    return 0 
+    def printTable(self):
+        print()
+        print('Dealers Count:', self.dealersCount)
+        self.printCards(self.dealersHand)
+        for i,k in enumerate(self.playersHand):
+            print(f'Hand {i + 1}: ', self.count(self.playersHand[i]))
+            self.printCards(k)
 
+    def printMoveMenu(self):
+        print("1 | Hit")
+        print("2 | Stand")
+        print("3 | Split")
+            
+    def nextHand(self, hand, playing):
+        for i,k in enumerate(playing):
+            if i != hand and k == True:
+                return i
+        return hand
+    
+    def getResults(self):
+        ''''''
+        result = {'winnings': self.bet, 'win' : False, 'blackjack': False, 'split': False, 'push' : False,'cardCount': int()}
+        hit = True
+        if len(self.playersCount) == 1:
+            result['cardCount'] = len(self.playersHand[0])
+            if self.playersCount[0] > 21:
+                result['winnings'] = 0
+                return result
+            while(self.dealersCount < self.playersCount[0] and self.playersCount[0] <= 21):
+                newCard = random.sample(self.deck,1)
+                self.dealersHand.append(newCard[0])
+                self.removeCardsFromDeck(self.deck, newCard)
+                self.dealersCount = self.count(self.dealersHand)
+            if self.dealersCount <= 21:
+                if self.dealersCount > self.playersCount[0]:
+                    print("Loser!!")
+                    result['winnings'] = 0
+                    return result
+                elif self.dealersCount == self.playersCount[0]:
+                    print("Push!! Return your bet.")
+                    return result
+                else:
+                    print("Winner Winner!!")
+                    result['winnings'] *= 1.5
+                    return result
+            else:
+                print(f"Dealer bust!! You win ${result['winnings']}")
+                result['winnings'] *= 1.5
+            return result
+        else:
+            # Split
+            result['split'] = True
+            result['cardCount'] = max(len(self.playersHand[0]),len(self.playersHand[1]))
+            hit == True
+            while(self.dealersCount < self.playersCount[0] and self.dealersCount < self.playersCount[1]):
+                newCard = random.sample(self.deck,1)
+                self.dealersHand.append(newCard[0])
+                self.removeCardsFromDeck(self.deck, newCard)
+                self.dealersCount = self.count(self.dealersHand)
+            if self.dealersCount <= 21:
+                wins, losses, pushes = 0, 0, 0
+                for i, k in enumerate(self.playersCount):
+                    if k <= 21:
+                        wins += 1 if self.dealersCount < self.playersCount[i] else 0
+                        losses += 1 if self.dealersCount > self.playersCount[i] else 0
+                        pushes += 1 if self.dealersCount == self.playersCount[i] else 0
+                    else:
+                        losses += 1
+                if wins == 2:
+                    result['winnings'] = (self.bet * 1.5) * 2
+                    result['win'] = True
+                    return result
+                elif losses == 2:
+                    result['winnings'] -= self.bet * 2 
+                    return result
+                elif pushes == 2:
+                    result['winnings'] = self.bet
+                    result['push'] = True
+                    return result
+                elif wins == 1 and losses == 1:
+                    result['winnings'] = (self.bet * 1.5) - self.bet
+                    return result
+                elif wins == 1 and pushes == 1:
+                    result['winnings'] = (self.bet * 1.5) + self.bet
+                    result['push'] = True
+                    return result
+                elif losses == 1 and pushes == 1:
+                    result['winnings'] = 0
+                    result['push'] = True
+                    return result
+            else:
+                # dealer bust
+                bustCount = 0
+                for i,playerCount in enumerate(self.playersCount):
+                    if playerCount > 21:
+                        bustCount += 1
+                if bustCount == 0:
+                    result['winnings'] = (self.bet * 1.5) * 2
+                    result['win'] = True
+                    return result
+                elif bustCount == 1:
+                    result['winnings'] = (self.bet * 1.5) - self.bet
+                    result['win'] = True
+                    return result
+                
+    def playTerminal(self):
+        hand = 0
+        playing = [True, False]
+        if self.playersCount == 21:
+            return {'winnings': self.bet * 1.5, 'win' : True, 'blackjack': True, 'split': False, 'push' : False,'cardCount': 2}
+        while True:
+            if playing[0] == False and playing[1] == False:
+                break
+            hand = self.nextHand(hand, playing)
+            self.printTable()
+            self.printMoveMenu()
+            move = True
+            while move == True:
+                inp = int(input(f'>> Hand {hand + 1}: '))
+                if inp == 1:
+                    self.hit(hand)
+                    bust = self.validate(self.playersHand[hand])
+                    if bust == False:
+                        playing[hand] = False
+                    if len(self.playersHand) == hand:
+                        self.rounds += 1
+                    move = False
+                elif inp == 2:
+                    playing[hand] = False
+                    move = False
+                elif inp == 3:
+                    if len(self.playersHand) == 2:
+                        print('Reached Split Max.')
+                    elif self.wallet < self.bet:
+                        print(f'You need at least ${self.bet} to split.') 
+                    elif self.playersHand[0][0].value != self.playersHand[0][1].value or self.rounds != 1:
+                        print('Unable to split.')
+                    else:
+                        self.split()
+                        self.printTable() 
+                        self.printMoveMenu()
+                        playing[1] = True
+                        
+        
+        results = self.getResults()
+        self.printTable()
+        return results
+        
+            
