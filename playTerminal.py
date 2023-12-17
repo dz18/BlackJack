@@ -1,5 +1,6 @@
 from components import Card, BlackJack
 import json
+from termcolor import colored, cprint
 
 suits = ['hearts', 'diamonds', 'spades', 'clubs']
 courts = ['king', 'queen', 'jester']
@@ -39,6 +40,7 @@ def resetData(database, userID):
         json.dump(database, f, indent=4)
 
 def checkAchievements(userData, splitWins, winStreak, winnings, CardCountWin, plays ):
+    # checkAchievements(userdata, [Split, Win], winStreak, winnings, [Win, CardCount], plays)
     for k,v in userData['achievements'].items():
         if v['earned'] == True:
             pass
@@ -46,11 +48,11 @@ def checkAchievements(userData, splitWins, winStreak, winnings, CardCountWin, pl
             ''' Win five hands in a row without busting or going over 21 '''
             v['earned'] = True
             print(f'Acievement Unlocked: {k}!!')
-        elif k == 'Split Personalilty' and splitWins == True:
+        elif k == 'Split Personalilty' and splitWins[0] == True and splitWins[1] == True:
             ''' Successfully split a pair of cards and win both hands '''
             v['earned'] = True
             print(f'Acievement Unlocked: {k}!!')
-        elif k == 'Five-Card Charlie' and CardCountWin == True:
+        elif k == 'Five-Card Charlie' and CardCountWin[0] == True and CardCountWin[1] >= 5:
             ''' Win a hand with a five-card total without busting '''
             v['earned'] = True
             print(f'Acievement Unlocked: {k}!!')
@@ -67,25 +69,52 @@ def checkAchievements(userData, splitWins, winStreak, winnings, CardCountWin, pl
             v['earned'] = True
             print(f'Acievement Unlocked: {k}!!')
 
+def postGameMenu():
+    print('Press ' + colored('Y', 'light_cyan') + ' | Play Again')
+    print('Press ' + colored('Q', 'light_cyan') + ' | Quit')
+    print('Press ' + colored('A', 'light_cyan') + ' | Achievements')
+    print('======================')
+
+def printAchievements(userData):
+    unlocked = list()
+    locked = list()
+    for name,desc in user['achievements'].items():
+        if desc['earned'] == True:
+            unlocked.append([name, desc])
+        else:
+            locked.append([name,desc])
+
+    print()
+    if len(unlocked) != 0:
+        
+        print(colored('~ UNLOCKED ~','blue'))  
+        for desc in unlocked:
+            print(' - ' + colored(desc[0], 'yellow') + ' : ' + (desc[1]['description']))
+    if len(locked) != 0:
+        print(colored('~ LOCKED ~','blue'))
+        for desc in locked:
+            print(' - ' + colored(desc[0], 'yellow') + ' : ' + desc[1]['description'])
+    print()
+
 game = True
 db = loadData()
 
 while True:
     # Print save files
-    print("\n~ Chose Account ~")
+    print(colored("\n~ Chose Account ~", "blue"))
     for i,k in enumerate(db):
         if k["username"] == None:
-            print(f"{i + 1} | <Empty>")
+            print(f"Press " + colored(i + 1, "light_cyan") + " | <Empty>")
         else:
-            print(f"{i + 1} | {k['username']}")
-            print(f"   - Wallet: ${k['wallet']}")
-    print("==|=================")
-    print("Q | Quit")
-    print("R | Reset Account\n")
+            print(f"Press " + colored(i + 1, "light_cyan") + " | " + k['username'])
+            print( "         - Wallet: $%.2f" % (k['wallet']))
+    print('============================')
+    print("Press " + colored("Q", "light_cyan") + " | Quit")
+    print("Press " + colored("R", "light_cyan") + " | Reset Account")
     
     # Validate input
     try:
-        inp = input("Enter index # or letter: ")
+        inp = input(" >> ")
         if inp.isnumeric():
             inp = int(inp)
             if inp - 1 < 0 or inp - 1 >= len(db):
@@ -99,12 +128,12 @@ while True:
                 game = False
                 break
             elif inp.upper() == 'R':
-                print("\n~ Select Account to reset ~")
+                print(colored("\n~ Select Account to reset ~", "blue"))
                 for i,k in enumerate(db):
                     if k["username"] == None:
                         pass
                     else:
-                        print(f"{i + 1} | {k['username']}")
+                        print("Press " + colored(i + 1, 'light_cyan') + " | " + k['username'])
                         print(f" - Wallet: {k['wallet']}")
                 try:
                     inp = int(input(" >> "))
@@ -135,10 +164,14 @@ if game != False:
 while (game == True) and (user["wallet"] >= 5):
     # User places a bet
     while bet == 0:
-        print(f"\nWinnings Today: ${winnings}")
-        print(f"Wallet: ${user['wallet']}")
+        print("\n" + colored('Winnings Today: ',"yellow"), end='')
+        if winnings < 0:
+            print(colored('$' + str(winnings), 'red'))
+        else:
+            print(colored('$' + str(winnings), 'light_green'))
+        print(colored("Wallet: ", "yellow") + colored("$%.2f" % user['wallet'], 'light_green'))
         try:
-            inp = int(input("Place bet: $"))
+            inp = int(input(colored("Place bet: $", "light_green")))
             if inp >= 5 and inp <= user["wallet"]:
                 user["wallet"] -= inp
                 winnings -= inp
@@ -159,31 +192,38 @@ while (game == True) and (user["wallet"] >= 5):
     winnings += result['winnings']
     winStreak = winStreak + 1 if result['win'] == True else 0
 
-    print(f"\nWinnings Today: ${winnings}")
-    print(f"Wallet: ${user['wallet']}")
+    print("\n" + colored("Winnings Today: ", 'yellow'), end='')
+    if winnings < 0:
+        print(colored('$' + str(winnings), 'red'))
+    else:
+        print(colored('$' + str(winnings), 'light_green'))
+    print(colored('Wallet: ', 'yellow') + colored('$%.2f' % user['wallet'],'light_green'))
 
     if user["wallet"] < 5:
-        print("Sorry, you dont have enough money to play.")
+        colored("Sorry, you dont have enough money to play.", "red")
         break
     
     # Ask user if they want to play again
-    checkAchievements(user,False, winStreak, winnings, False, plays)
+    checkAchievements(user, [result['split'],result['win']], winStreak, winnings, [result['win'], result['cardCount']], plays)
     decision = True
     while decision:
         try:
-            inp = str(input("Play Again? (Y/N): "))
-            if inp.upper() == 'N':
+            postGameMenu()
+            inp = str(input('>> '))
+            if inp.upper()== 'Q':
                 print("Thank you for playing!")
                 decision = False
             elif inp.upper() == 'Y':
                 print("We Play again!")
                 decision = False
+            elif inp.upper() == 'A':
+                printAchievements(user)
             else:
                 pass
         except:
             pass
 
-    if inp.upper() == 'N':
+    if inp.upper() == 'Q':
         break
 
 saveData(db)

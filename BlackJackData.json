@@ -1,8 +1,8 @@
 [
     {
         "id": 1,
-        "username": null,
-        "wallet": 10000,
+        "username": "test",
+        "wallet": 0,
         "achievements": {
             "Lucky Streak": {
                 "description": "Win five hands in a row without busting or going over 21",

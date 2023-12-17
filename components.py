@@ -1,4 +1,5 @@
 import random
+from termcolor import colored
 
 class Card:
     def __init__(self, name, value, suit):
@@ -102,20 +103,20 @@ class BlackJack():
 
     def printCards(self, hand):
         for card in hand:
-            print(" - " + card.name)
+            print(" - " + colored(card.name, 'dark_grey'))
 
     def printTable(self):
         print()
-        print('Dealers Count:', self.dealersCount)
+        print('Dealers Count: ' + colored(self.dealersCount, 'yellow'))
         self.printCards(self.dealersHand)
         for i,k in enumerate(self.playersHand):
-            print(f'Hand {i + 1}: ', self.count(self.playersHand[i]))
+            print(f'Hand {i + 1}: ' + colored(self.playersCount[i], 'yellow'))
             self.printCards(k)
 
     def printMoveMenu(self):
-        print("1 | Hit")
-        print("2 | Stand")
-        print("3 | Split")
+        print("Press " + colored("1", "light_cyan") + " | Hit")
+        print("Press " + colored("2", "light_cyan") + " | Stand")
+        print("Press " + colored("3", "light_cyan") + " | Split")
             
     def nextHand(self, hand, playing):
         for i,k in enumerate(playing):
@@ -130,6 +131,7 @@ class BlackJack():
         if len(self.playersCount) == 1:
             result['cardCount'] = len(self.playersHand[0])
             if self.playersCount[0] > 21:
+                print(colored("\nBusted!! You exceeded 21.", "red"))
                 result['winnings'] = 0
                 return result
             while(self.dealersCount < self.playersCount[0] and self.playersCount[0] <= 21):
@@ -139,19 +141,19 @@ class BlackJack():
                 self.dealersCount = self.count(self.dealersHand)
             if self.dealersCount <= 21:
                 if self.dealersCount > self.playersCount[0]:
-                    print("Loser!!")
+                    print(colored("\nLoser!!", "red"))
                     result['winnings'] = 0
                     return result
                 elif self.dealersCount == self.playersCount[0]:
-                    print("Push!! Return your bet.")
+                    print("\nPush!! Returning your bet.")
                     return result
                 else:
-                    print("Winner Winner!!")
+                    print(colored("\nWinner Winner!!", "light_green"))
                     result['winnings'] *= 1.5
                     return result
             else:
-                print(f"Dealer bust!! You win ${result['winnings']}")
                 result['winnings'] *= 1.5
+                print(colored("\nDealer bust!! You win $%.2f" % result['winnings'], 'light_green'))
             return result
         else:
             # Split
@@ -212,7 +214,8 @@ class BlackJack():
     def playTerminal(self):
         hand = 0
         playing = [True, False]
-        if self.playersCount == 21:
+        if self.playersCount[0] == 21:
+            print(colored('BlackJack!! Instant Winner!!', 'light_green'))
             return {'winnings': self.bet * 1.5, 'win' : True, 'blackjack': True, 'split': False, 'push' : False,'cardCount': 2}
         while True:
             if playing[0] == False and playing[1] == False:
