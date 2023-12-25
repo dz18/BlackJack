@@ -9,10 +9,11 @@ class Card:
 
 class BlackJack():
     limit = 21
-    rounds = 1
+    hidden = True
     wallet = 10000
     winnings = 0
     newGame = True
+    rounds = 1
 
     def __init__(self, cards, bet, wallet):
         self.deck = cards
@@ -85,7 +86,7 @@ class BlackJack():
                     self.deck.append(Card(courts[11 - value],10, suit))
                 else:
                     self.deck.append(Card(value,value,suit))
-        self.dealersHand = random.sample(self.deck, 1)
+        self.dealersHand = random.sample(self.deck, 2)
         self.removeCardsFromDeck(self.deck, self.dealersHand)
         self.playersHand = [random.sample(self.deck, 2)]
         self.removeCardsFromDeck(self.deck, self.playersHand)
@@ -103,11 +104,18 @@ class BlackJack():
 
     def printCards(self, hand):
         for card in hand:
-            print(" - " + colored(card.name, 'dark_grey'))
+            if self.dealersHand == hand and self.hidden == True:
+                print(" - " + colored(card.name, 'dark_grey'))
+                break
+            else:
+                print(" - " + colored(card.name, 'dark_grey'))
 
     def printTable(self):
         print()
-        print('Dealers Count: ' + colored(self.dealersCount, 'yellow'))
+        if self.hidden == True:
+            print('Dealers Count: ' + colored(self.dealersHand[0].value, 'yellow'))
+        else:
+            print('Dealers Count: ' + colored(self.dealersCount, 'yellow'))
         self.printCards(self.dealersHand)
         for i,k in enumerate(self.playersHand):
             print(f'Hand {i + 1}: ' + colored(self.playersCount[i], 'yellow'))
@@ -150,9 +158,11 @@ class BlackJack():
                 else:
                     print(colored("\nWinner Winner!!", "light_green"))
                     result['winnings'] *= 1.5
+                    result['win'] = True
                     return result
             else:
                 result['winnings'] *= 1.5
+                result['win'] = True
                 print(colored("\nDealer bust!! You win $%.2f" % result['winnings'], 'light_green'))
             return result
         else:
@@ -215,17 +225,23 @@ class BlackJack():
         hand = 0
         playing = [True, False]
         if self.playersCount[0] == 21:
-            print(colored('BlackJack!! Instant Winner!!', 'light_green'))
+            print(colored('BlackJack!! Instant Winner +$%.2f!!' % (self.bet * 1.5), 'light_green'))
             return {'winnings': self.bet * 1.5, 'win' : True, 'blackjack': True, 'split': False, 'push' : False,'cardCount': 2}
         while True:
             if playing[0] == False and playing[1] == False:
+                self.hidden = False
                 break
             hand = self.nextHand(hand, playing)
             self.printTable()
             self.printMoveMenu()
             move = True
             while move == True:
-                inp = int(input(f'>> Hand {hand + 1}: '))
+                while True:
+                    try:
+                        inp = int(input(f'>> Hand {hand + 1}: '))
+                        break
+                    except:
+                        print("Invalid input detected.")
                 if inp == 1:
                     self.hit(hand)
                     bust = self.validate(self.playersHand[hand])

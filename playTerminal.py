@@ -47,27 +47,27 @@ def checkAchievements(userData, splitWins, winStreak, winnings, CardCountWin, pl
         elif k == 'Lucky Streak' and winStreak == 5: 
             ''' Win five hands in a row without busting or going over 21 '''
             v['earned'] = True
-            print(f'Acievement Unlocked: {k}!!')
+            print(colored(f'Acievement Unlocked: {k}!!', 'light_green'))
         elif k == 'Split Personalilty' and splitWins[0] == True and splitWins[1] == True:
             ''' Successfully split a pair of cards and win both hands '''
             v['earned'] = True
-            print(f'Acievement Unlocked: {k}!!')
+            print(colored(f'Acievement Unlocked: {k}!!', 'light_green'))
         elif k == 'Five-Card Charlie' and CardCountWin[0] == True and CardCountWin[1] >= 5:
             ''' Win a hand with a five-card total without busting '''
             v['earned'] = True
-            print(f'Acievement Unlocked: {k}!!')
+            print(colored(f'Acievement Unlocked: {k}!!', 'light_green'))
         elif k == 'Marathon' and plays == 100:
             ''' Play 100 consecutive hands without leaving the table '''
             v['earned'] = True
-            print(f'Acievement Unlocked: {k}!!')
+            print(colored(f'Acievement Unlocked: {k}!!', 'light_green'))
         elif k == 'BlackJack Tycoon' and userData['wallet'] == 1000000:
             ''' Accumulate a total chip count of one million in your wallet '''
             v['earned'] = True
-            print(f'Acievement Unlocked: {k}!!')
+            print(colored(f'Acievement Unlocked: {k}!!', 'light_green'))
         elif k == 'Crescendo Conquest' and winnings == 1000000:
             ''' Accumulate a total chip count of one million in one sitting '''
             v['earned'] = True
-            print(f'Acievement Unlocked: {k}!!')
+            print(colored(f'Acievement Unlocked: {k}!!', 'light_green'))
 
 def postGameMenu():
     print('Press ' + colored('Y', 'light_cyan') + ' | Play Again')
@@ -191,20 +191,17 @@ while (game == True) and (user["wallet"] >= 5):
     user["wallet"] += result['winnings']
     winnings += result['winnings']
     winStreak = winStreak + 1 if result['win'] == True else 0
-
+    
+    checkAchievements(user, [result['split'],result['win']], winStreak, winnings, [result['win'], result['cardCount']], plays)
     print("\n" + colored("Winnings Today: ", 'yellow'), end='')
     if winnings < 0:
-        print(colored('$' + str(winnings), 'red'))
+        print(colored('$%.2f' % winnings, 'red'))
     else:
-        print(colored('$' + str(winnings), 'light_green'))
+        print(colored('$%.2f' % winnings, 'light_green'))
     print(colored('Wallet: ', 'yellow') + colored('$%.2f' % user['wallet'],'light_green'))
-
-    if user["wallet"] < 5:
-        colored("Sorry, you dont have enough money to play.", "red")
-        break
     
     # Ask user if they want to play again
-    checkAchievements(user, [result['split'],result['win']], winStreak, winnings, [result['win'], result['cardCount']], plays)
+    
     decision = True
     while decision:
         try:
@@ -225,6 +222,10 @@ while (game == True) and (user["wallet"] >= 5):
 
     if inp.upper() == 'Q':
         break
+
+if user["wallet"] < 5:
+    print(colored("You're out of money. Sorry.", "red"))
+    
 
 saveData(db)
 
