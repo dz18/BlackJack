@@ -1,12 +1,12 @@
 [
     {
         "id": 1,
-        "username": "test",
-        "wallet": 9500,
+        "username": null,
+        "wallet": 10000,
         "achievements": {
             "Lucky Streak": {
                 "description": "Win five hands in a row without busting or going over 21",
-                "earned": true
+                "earned": false
             },
             "Split Personalilty": {
                 "description": "Successfully split a pair of cards and win both hands",

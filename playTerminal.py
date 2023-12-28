@@ -101,7 +101,7 @@ db = loadData()
 
 while True:
     # Print save files
-    print(colored("\n~ Chose Account ~", "blue"))
+    print(colored("\n~ Select Account ~", "blue"))
     for i,k in enumerate(db):
         if k["username"] == None:
             print(f"Press " + colored(i + 1, "light_cyan") + " | <Empty>")
